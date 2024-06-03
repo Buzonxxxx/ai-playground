@@ -4,14 +4,8 @@ from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain.schema.output_parser import StrOutputParser
 
-# Load environment variables from .env file
 load_dotenv()
-
-# Retrieve the API key from the environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
-
-if not openai_api_key:
-    raise ValueError("The OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
 
 # Define the prompt template
 prompt = PromptTemplate.from_template("{flower}是誰?")
