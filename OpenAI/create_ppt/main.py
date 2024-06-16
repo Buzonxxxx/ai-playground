@@ -18,7 +18,7 @@ file = client.files.create(
     file=open(file_path, 'rb'),  # read binary
     purpose='assistants'
 )
-# Create agent with doc
+# Create an agent with doc
 assistant = client.beta.assistants.create(
     name="數據分析師",
     instructions="作為一位數據科學助理，當給定數據和一個查詢時，你能編寫適當的程式碼並創建適當的視覺化。",
@@ -42,9 +42,7 @@ thread = client.beta.threads.create(
             "attachments": [
                 {
                     "file_id": file.id,
-                    "tools": [
-                        {"type": "code_interpreter"}
-                    ]
+                    "tools": [{ "type": "code_interpreter" }]
                 }
             ]
         }
@@ -77,7 +75,7 @@ while True:
         if messages.data and messages.data[0].content:
             print("當前Message: ", messages.data[0].content[0])
 
-# Convert output file to png sand save it
+# Convert output file to png and save it
 def convert_file_to_png(file_id, write_path):
     data = client.files.content(file_id)
     data_bytes = data.read()
@@ -99,6 +97,7 @@ plot_file = client.files.create(
 
 # Define submit message function
 def submit_message_wait_completion(assistant_id, thread, user_message, file_ids=None):
+    # 檢查並等待所有正在執行的Run完成
     for run in client.beta.threads.runs.list(thread_id=thread.id).data:
         if run.status == 'in_progress':
             print(f"等待Run {run.id} 完成...")
@@ -118,7 +117,6 @@ def submit_message_wait_completion(assistant_id, thread, user_message, file_ids=
         params['attachments'] = attachments
     client.beta.threads.messages.create(**params)
 
-    # 创建Run
     run = client.beta.threads.runs.create(thread_id=thread.id, assistant_id=assistant_id)
     return run 
 
@@ -139,3 +137,33 @@ response = get_response(thread)
 title = response.data[0].content[0].text.value
 print(title)
 print("----------")
+
+# 提供花语秘境公司的说明
+company_summary = "我们是網路鲜花批發商，但是我们董事长也寫IT圖書！"
+
+# 使用DALL-E 3生成圖片
+response = client.images.generate(
+  model='dall-e-3',
+  prompt=f"根据這個公司概述 {company_summary}, \
+           生成一張展示成長和前進道路的啟發性照片。這將用於季度銷售規劃會議",
+       size="1024x1024",
+       quality="hd",
+       n=1
+)
+image_url = response.data[0].url
+
+# 獲取DALL-E 3生成的圖片
+import requests
+dalle_img_path = '花語秘境.png'
+img = requests.get(image_url)
+
+# 將圖片存到本地
+with open(dalle_img_path,'wb') as file:
+  file.write(img.content)
+
+# 上傳圖片提供给助手做為PPT素材
+dalle_file = client.files.create(
+  file=open(dalle_img_path, "rb"),
+  purpose='assistants'
+)
+
