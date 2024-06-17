@@ -10,7 +10,7 @@ client = OpenAI()
 # Create assistant
 assistant = client.beta.assistants.create(
     name="幼兒籃球教練",
-    instructions="幫我訓練9歲小孩的籃球技能",
+    instructions="你是一位國小籃球專任教練，擅長針對12歲以下小孩的籃球訓練",
     tools=[{"type": "code_interpreter"}],
     model="gpt-3.5-turbo",
 )
@@ -26,10 +26,22 @@ message = client.beta.threads.messages.create(
 )
 
 # Create run
-run = client.beta.threads.runs.create(
+run = client.beta.threads.runs.create_and_poll(
     thread_id=thread.id,
-    assistant_id=assistant.id,
-    instructions="請回答問題"
+    assistant_id=assistant.id
 )
 
-print(run)
+if run.status == 'completed': 
+  messages = client.beta.threads.messages.list(thread_id=thread.id)
+  for message in messages.data:
+    print(f"Message ID: {message.id}")
+    print(f"Role: {message.role}")
+    print(f"Assistant ID: {message.assistant_id}")
+    print(f"Created At: {message.created_at}")
+    print("Content:")
+    for content_block in message.content:
+        if content_block.type == 'text':
+            print(content_block.text.value)
+    print("\n")
+else:
+  print(run.status)

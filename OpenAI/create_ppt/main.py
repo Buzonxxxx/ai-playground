@@ -25,9 +25,7 @@ assistant = client.beta.assistants.create(
     model="gpt-4o",
     tools=[{ "type": "code_interpreter" }],
     tool_resources={
-        "code_interpreter": {
-            "file_ids": [file.id]
-        }
+        "code_interpreter": { "file_ids": [file.id] }
     }
 )
 print(assistant)
