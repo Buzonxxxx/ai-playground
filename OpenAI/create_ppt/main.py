@@ -24,9 +24,7 @@ assistant = client.beta.assistants.create(
     instructions="作為一位數據科學助理，當給定數據和一個查詢時，你能編寫適當的程式碼並創建適當的視覺化。",
     model="gpt-4o",
     tools=[{ "type": "code_interpreter" }],
-    tool_resources={
-        "code_interpreter": { "file_ids": [file.id] }
-    }
+    tool_resources={ "code_interpreter": { "file_ids": [file.id] }}
 )
 print(assistant)
 print("----------")

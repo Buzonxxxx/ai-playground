@@ -9,7 +9,7 @@ client = OpenAI()
 
 # Create assistant
 assistant = client.beta.assistants.create(
-    name="幼兒籃球教練",
+    name="國小籃球教練",
     instructions="你是一位國小籃球專任教練，擅長針對12歲以下小孩的籃球訓練",
     tools=[{"type": "code_interpreter"}],
     model="gpt-3.5-turbo",
