@@ -42,8 +42,6 @@ print(run)
 
 def get_function_details(run):
 
-  print("\nrun.required_action\n",run.required_action)
-
   function_name = run.required_action.submit_tool_outputs.tool_calls[0].function.name
   arguments = run.required_action.submit_tool_outputs.tool_calls[0].function.arguments
   function_id = run.required_action.submit_tool_outputs.tool_calls[0].id
@@ -65,7 +63,7 @@ def get_encouragement(mood, name=None):
     encouragement_messages = {
         "開心": "看到你这么阳光真好！保持这份积极！",
         "難過": "記得，每片烏雲背後都有陽光。",
-        "壓力大": "深呼吸，慢慢呼出，一切都会好起来的。",
+        "壓力大": "深呼吸，慢慢呼出，一切都會好起来的。",
         "疲倦": "你已经很努力了，现在是时候休息一下了。"
     }
 
@@ -94,5 +92,34 @@ encouragement_message = function_to_call(
     mood=function_args.get("mood")
 )
 
-# 打印结果以进行验证
 print(encouragement_message)
+
+def submit_tool_outputs(run,thread,function_id,function_response):
+    run = client.beta.threads.runs.submit_tool_outputs(
+    thread_id=thread.id,
+    run_id=run.id,
+    tool_outputs=[
+      {
+        "tool_call_id": function_id,
+        "output": str(function_response),
+      }
+    ]
+    ) 
+    return run
+
+run = submit_tool_outputs(run,thread,function_id,encouragement_message)
+print('這時，Run收到了结果')
+print(run)
+
+print('这时，Run繼續執行直至完成')
+run = poll_run_status(client, thread_id, run.id) 
+print(run)
+
+messages = client.beta.threads.messages.list(
+  thread_id=thread_id
+)
+
+print('下面打印最终的Message')
+for message in messages.data:
+    if message.role == "assistant":
+        print(message.content)
