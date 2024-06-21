@@ -1,0 +1,20 @@
+{
+    "name": "get_encouragement",
+    "description": "根據用戶的心情提供鼓勵訊息",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "mood": {
+          "type": "string",
+          "description": "用戶當前的心情，例如：開心，難過，壓力大，疲倦"
+        },
+        "name": {
+          "type": "string",
+          "description": "用戶的名字，用來產生個性化鼓勵訊息"
+        }
+      },
+      "required": [
+        "mood"
+      ]
+    }
+  }

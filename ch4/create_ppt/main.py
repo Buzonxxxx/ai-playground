@@ -12,6 +12,7 @@ client = OpenAI()
 # Read file
 file_path = 'sales_data.csv'
 sales_data = pd.read_csv(file_path)
+print(sales_data)
 
 # Create doc
 file = client.files.create(
@@ -34,7 +35,7 @@ thread = client.beta.threads.create(
     messages=[
         {
             "role": "user",
-            "content": "計算從2022年到2025年每個季度的總銷售總額，並通過不同的產品將其可視化為折線圖，產品線條顏色分別為紅，藍，綠。",
+            "content": "從給予的csv檔案中，計算從2022年到2025年每個季度的總銷售總額，並通過不同的產品將其可視化為折線圖，產品線條顏色分別為紅，藍，綠。",
             "attachments": [
                 {
                     "file_id": file.id,
