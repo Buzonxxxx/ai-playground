@@ -20,8 +20,8 @@ file = client.files.create(
 )
 # Create an agent with doc
 assistant = client.beta.assistants.create(
-    name="數據分析師",
-    instructions="作為一位數據科學助理，當給定數據和一個查詢時，你能編寫適當的程式碼並創建適當的視覺化。",
+    name="銷售數據分析師",
+    instructions="作為一位數據科學專家，當給定數據和一個查詢時，你能編寫適當的程式碼並創建適當的視覺化。",
     model="gpt-4o",
     tools=[{ "type": "code_interpreter" }],
     tool_resources={ "code_interpreter": { "file_ids": [file.id] }}
@@ -88,8 +88,8 @@ plot_file = client.files.create(
   purpose='assistants'
 )
 
-# messages = client.beta.threads.messages.list(thread_id=thread.id)
-# [message.content[0] for message in messages.data]
+messages = client.beta.threads.messages.list(thread_id=thread.id)
+print([message.content[0] for message in messages.data])
 
 # Define submit message function
 def submit_message_wait_completion(assistant_id, thread, user_message, file_ids=None):
@@ -135,7 +135,7 @@ print(title)
 print("----------")
 
 # 提供花语秘境公司的说明
-company_summary = "我们是網路鲜花批發商，但是我们董事长也寫IT圖書！"
+company_summary = "我们是網路鲜花批發商，但是我們董事长也寫IT圖書！"
 
 # 使用DALL-E 3生成圖片
 response = client.images.generate(
