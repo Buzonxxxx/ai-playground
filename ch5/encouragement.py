@@ -6,40 +6,36 @@ client = OpenAI()
 # Create assistant
 assistant_id = "asst_lBCScAWifdBtQD8i6IR25IAT" # Assistant ID
 assistant = client.beta.assistants.retrieve(assistant_id)
-# print(assistant)
 
 # Create thread
 thread = client.beta.threads.create()
 thread_id = thread.id
-# print(thread)
 
+# Add message
 message = client.beta.threads.messages.create(
     thread_id=thread_id,
     role="user",
-    content="來安慰一下心情低落的Louis！"
+    content="Louis現在有點焦慮，請安慰一下他！"
 )
-# print(message)
 
 # Create run
 run = client.beta.threads.runs.create(
   thread_id=thread_id,
   assistant_id=assistant.id
 )
-# print(run)
 
 import time
 def poll_run_status(client, thread_id, run_id, interval=2):
     """ 輪詢Run的狀態，直到它不再是'requires_action'或直到完成 """
     while True:
         run = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
-        print(run)
+        # print(run)
         if run.status in ['requires_action', 'completed']:
             return run
         time.sleep(interval)
 
 run = poll_run_status(client, thread_id, run.id)
-print('這時Run進入了requires_action狀態\n')
-print("讀取function JSON 數據之後Run的狀態:\n")
+print('這時Run讀取了function JSON Schema，然後進入了requires_action狀態\n')
 print(run)
 
 def get_function_details(run):
@@ -70,7 +66,7 @@ def get_encouragement(mood, name=None):
         message = f"{name}，{encouragement_messages.get(mood, '抬頭挺胸，一切都會變好的。')}\n"
     else:
         message = encouragement_messages.get(mood, '抬頭挺胸，一切都會變好的。\n')
-
+    
     return message
 
 import json
