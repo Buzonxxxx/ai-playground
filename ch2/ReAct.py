@@ -1,16 +1,21 @@
 from dotenv import load_dotenv
+from langchain import hub
+from langchain_openai import OpenAI
+from langchain_community.utilities import SerpAPIWrapper
+from langchain.agents.tools import Tool
+from langchain.agents import create_react_agent, AgentExecutor
+
+# 加載環境變量
 load_dotenv()  
 
 # 從hub中獲取React的Prompt
-from langchain import hub
 prompt = hub.pull("hwchase17/react")
-print(prompt)
+print("獲取的Prompt: ", prompt)
 
-from langchain_openai import OpenAI
+# 初始化OpenAI LLM
 llm = OpenAI()
 
-from langchain_community.utilities import SerpAPIWrapper
-from langchain.agents.tools import Tool
+# 設置SerpAPI工具
 search = SerpAPIWrapper()
 tools = [
     Tool(
@@ -20,13 +25,23 @@ tools = [
     ),
 ]
 
-from langchain.agents import create_react_agent
+# 創建React代理
 agent = create_react_agent(llm, tools, prompt)
 
-from langchain.agents import AgentExecutor
+# 初始化代理執行器
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-print("第一次運行的结果：")
-agent_executor.invoke({"input": "當前Agent最新研究進展是什麼?"})
-print("第二次運行的结果：")
-agent_executor.invoke({"input": "當前Agent最新研究進展是什麼?"})
+# 執行代理並打印結果
+def run_agent(input_text):
+    print("======")
+    print(f"輸入: {input_text}")
+    result = agent_executor.invoke({"input": input_text})
+    print(f"結果: {result}")
+    print("======")
+    return result
+
+# 第一次運行
+run_agent("當前Agent最新研究進展是什麼?")
+
+# 第二次運行
+run_agent("當前Agent最新研究進展是什麼?")

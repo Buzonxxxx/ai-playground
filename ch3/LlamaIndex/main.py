@@ -1,15 +1,13 @@
 from dotenv import load_dotenv
-import os
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 
 load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
 
 # Read documents from the 'data' directory
 documents = SimpleDirectoryReader("data").load_data()
 
 # Create an index from the documents, with a fallback to another model
-index = VectorStoreIndex.from_documents(documents, model="text-embedding-ada-002", api_key=openai_api_key)
+index = VectorStoreIndex.from_documents(documents, model="text-embedding-ada-002")
 
 # Create a query engine from the index
 query_engine = index.as_query_engine()

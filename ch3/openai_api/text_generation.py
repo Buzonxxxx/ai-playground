@@ -1,19 +1,13 @@
 from dotenv import load_dotenv
-import os
 from openai import OpenAI
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Retrieve the API key from the environment variable
-openai_api_key = os.getenv("OPENAI_API_KEY")
-
 client = OpenAI()
 
-print(openai_api_key)
-
 response = client.chat.completions.create(
-    model="gpt-4o",
+    model="gpt-3.5-turbo",
     response_format={"type": "json_object"},
     messages=[
         {"role": "system", "content": "你是一個幫助使用者了解鮮花訊息的智能助手，並能夠輸出JSON格式的內容"},

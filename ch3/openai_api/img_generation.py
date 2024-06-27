@@ -1,18 +1,14 @@
 from dotenv import load_dotenv
-import os
 from openai import OpenAI
+import requests
 
-# Load environment variables from .env file
 load_dotenv()
-
-# Retrieve the API key from the environment variable
-openai_api_key = os.getenv("OPENAI_API_KEY")
 
 client = OpenAI()
 
 response = client.images.generate(
     model="dall-e-3",
-    prompt="電商花語秘境的新春玫瑰花宣傳海報，配上文案",
+    prompt="6歲的台灣人Levi即將離開美國回到台灣唸書，美國幼稚園老師班幫他辦歡送派對，請畫一張派對海報並配上文案",
     size="1024x1024",
     quality="standard",
     n=1
@@ -20,5 +16,10 @@ response = client.images.generate(
 )
 
 image_url = response.data[0].url
-print(image_url)
+img = requests.get(image_url)
+
+# 將圖片存到本地
+dalle_img_path = '歡送派對.png'
+with open(dalle_img_path,'wb') as file:
+  file.write(img.content)
 
