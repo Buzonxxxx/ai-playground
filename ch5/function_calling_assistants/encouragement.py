@@ -1,7 +1,11 @@
 from dotenv import load_dotenv
-load_dotenv()
 from openai import OpenAI
+import time
+import json
+
 client = OpenAI()
+
+load_dotenv()
 
 # Create assistant
 assistant_id = "asst_lBCScAWifdBtQD8i6IR25IAT" # Assistant ID
@@ -12,7 +16,7 @@ thread = client.beta.threads.create()
 thread_id = thread.id
 
 # Add message
-message = client.beta.threads.messages.create(
+client.beta.threads.messages.create(
     thread_id=thread_id,
     role="user",
     content="Louis現在有點焦慮，請安慰一下他！"
@@ -24,12 +28,10 @@ run = client.beta.threads.runs.create(
   assistant_id=assistant.id
 )
 
-import time
 def poll_run_status(client, thread_id, run_id, interval=2):
     """ 輪詢Run的狀態，直到它不再是'requires_action'或直到完成 """
     while True:
         run = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
-        # print(run)
         if run.status in ['requires_action', 'completed']:
             return run
         time.sleep(interval)
@@ -39,10 +41,8 @@ print('這時Run讀取了function JSON Schema，然後進入了requires_action�
 print(run)
 
 def get_function_details(run):
-  function_name = run.required_action.submit_tool_outputs.tool_calls[0].function.name
-  arguments = run.required_action.submit_tool_outputs.tool_calls[0].function.arguments
-  function_id = run.required_action.submit_tool_outputs.tool_calls[0].id
-  return function_name, arguments, function_id
+  tool_call = run.required_action.submit_tool_outputs.tool_calls[0]
+  return tool_call.function.name, tool_call.function.arguments, tool_call.id
 
 function_name, arguments, function_id = get_function_details(run)
 print("function_name:", function_name)
@@ -69,17 +69,14 @@ def get_encouragement(mood, name=None):
     
     return message
 
-import json
+
 
 # 定義可用的函数
 available_functions = {
     "get_encouragement": get_encouragement
 }
 
-# 解析参数
 function_args = json.loads(arguments)
-
-# 動態調用函数
 function_to_call = available_functions[function_name]
 encouragement_message = function_to_call(
     name=function_args.get("name"),
@@ -108,10 +105,7 @@ print('這時，Run繼續執行直到完成\n')
 run = poll_run_status(client, thread_id, run.id) 
 print(run)
 
-messages = client.beta.threads.messages.list(
-  thread_id=thread_id
-)
-
+messages = client.beta.threads.messages.list(thread_id=thread_id)
 print('下面印出最终的Message')
 for message in messages.data:
     if message.role == "assistant":
