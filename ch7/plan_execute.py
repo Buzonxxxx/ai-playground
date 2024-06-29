@@ -17,7 +17,6 @@ def check_inventory(flower_type: str) -> int:
     # 實際應用中這裡應該是資料庫查詢或其他形式的庫存檢查
     return 100  # 假設每種花都有100個單位
 
-
 @tool
 def calculate_price(base_price: float, markup: float) -> float:
     """
@@ -29,7 +28,6 @@ def calculate_price(base_price: float, markup: float) -> float:
     - 最終價格
     """
     return base_price * (1 + markup)
-
 
 @tool
 def schedule_delivery(order_id: int, delivery_date: str):
@@ -44,7 +42,6 @@ def schedule_delivery(order_id: int, delivery_date: str):
     # 在實際應用中這裡應該是對接配送系統的過程
     return f"訂單 {order_id} 已安排在 {delivery_date} 配送"
 
-
 tools = [check_inventory, calculate_price]
 
 model = ChatOpenAI(temperature=0)
@@ -54,4 +51,4 @@ executor = load_agent_executor(model, tools, verbose=True)
 
 agent = PlanAndExecute(planner=planner, executor=executor, verbose=True)
 
-agent.run("查查玫瑰的庫存然後给出出貨方案！")
+agent.invoke("查查玫瑰的庫存然後给出出貨方案！")
