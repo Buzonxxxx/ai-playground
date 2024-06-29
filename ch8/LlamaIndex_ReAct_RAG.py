@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core import VectorStoreIndex
+from llama_index.core import SimpleDirectoryReader
 from llama_index.core import StorageContext
 from llama_index.core import load_index_from_storage
 from llama_index.core.tools import QueryEngineTool
@@ -9,13 +10,8 @@ from llama_index.core.agent import ReActAgent
 
 load_dotenv()
 
-A_docs = SimpleDirectoryReader(
-    input_files=["电商A-Third Quarter 2023 Results.pdf"]
-).load_data()
-B_docs = SimpleDirectoryReader(
-    input_files=["电商B-Third Quarter 2023 Results.pdf"]
-).load_data()
-
+A_docs = SimpleDirectoryReader(input_files=["電商A-Third Quarter 2023 Results.pdf"]).load_data()
+B_docs = SimpleDirectoryReader(input_files=["電商B-Third Quarter 2023 Results.pdf"]).load_data()
 
 A_index = VectorStoreIndex.from_documents(A_docs)
 B_index = VectorStoreIndex.from_documents(B_docs)
@@ -44,14 +40,14 @@ query_engine_tools = [
         query_engine=A_engine,
         metadata=ToolMetadata(
             name="A_Finance",
-            description=("用于提供A公司的财务信息"),
+            description=("用來提供A公司的財務資訊"),
         ),
     ),
     QueryEngineTool(
         query_engine=B_engine,
         metadata=ToolMetadata(
             name="B_Finance",
-            description=("用于提供B公司的财务信息"),
+            description=("用來提供B公司的財務資訊"),
         ),
     ),
 ]
@@ -59,4 +55,4 @@ query_engine_tools = [
 llm = OpenAI(model="gpt-4o")
 
 agent = ReActAgent.from_tools(query_engine_tools, llm=llm, verbose=True)
-agent.chat("比较一下两个公司的销售额")
+agent.chat("請比較一下兩間公司的revenue")
