@@ -42,7 +42,7 @@ def schedule_delivery(order_id: int, delivery_date: str):
     # 在實際應用中這裡應該是對接配送系統的過程
     return f"訂單 {order_id} 已安排在 {delivery_date} 配送"
 
-tools = [check_inventory, calculate_price]
+tools = [check_inventory, calculate_price, schedule_delivery]
 
 model = ChatOpenAI(temperature=0)
 
@@ -51,4 +51,4 @@ executor = load_agent_executor(model, tools, verbose=True)
 
 agent = PlanAndExecute(planner=planner, executor=executor, verbose=True)
 
-agent.invoke("查查玫瑰的庫存然後给出出貨方案！")
+agent.invoke("查查玫瑰的庫存然後给出50朵玫瑰花的價格和當天的配送方案！")
