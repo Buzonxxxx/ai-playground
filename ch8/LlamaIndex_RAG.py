@@ -10,7 +10,7 @@ from llama_index.core.agent import ReActAgent
 load_dotenv()
 
 A_docs = SimpleDirectoryReader(
-    input_files=["电商B-Third Quarter 2023 Results.pdf"]
+    input_files=["电商A-Third Quarter 2023 Results.pdf"]
 ).load_data()
 B_docs = SimpleDirectoryReader(
     input_files=["电商B-Third Quarter 2023 Results.pdf"]
@@ -39,7 +39,6 @@ except:
 A_engine = A_index.as_query_engine(similarity_top_k=3)
 B_engine = B_index.as_query_engine(similarity_top_k=3)
 
-# 配置查询工具
 query_engine_tools = [
     QueryEngineTool(
         query_engine=A_engine,
@@ -57,8 +56,7 @@ query_engine_tools = [
     ),
 ]
 
-llm = OpenAI(model="gpt-3.5-turbo-0613")
+llm = OpenAI(model="gpt-4o")
 
-# Create ReAct Agent
 agent = ReActAgent.from_tools(query_engine_tools, llm=llm, verbose=True)
 agent.chat("比较一下两个公司的销售额")
