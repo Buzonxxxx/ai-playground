@@ -3,18 +3,38 @@ from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain.schema.output_parser import StrOutputParser
 
-load_dotenv()
+def setup_environment():
+    """Load environment variables from .env file."""
+    load_dotenv()
 
-prompt = PromptTemplate.from_template("請介紹{flower}是什麼花?")
+def create_chain():
+    """Create and return a LangChain processing chain."""
+    # Define a prompt template for flower introductions
+    prompt = PromptTemplate.from_template("請介紹{flower}是什麼花?")
+    
+    # Initialize the language model
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=1)
+    
+    # Set up the output parser
+    output_parser = StrOutputParser()
+    
+    # Combine prompt, language model, and output parser into a chain
+    return prompt | llm | output_parser
 
-llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=1)
+def main():
+    """Main function to run the LangChain flower introduction process."""
+    # Set up the environment
+    setup_environment()
+    
+    # Create the processing chain
+    chain = create_chain()
+    
+    # Invoke the chain with a specific flower (rose)
+    result = chain.invoke({"flower": "玫瑰"})
+    
+    # Print the result
+    print(result)
 
-output_parser = StrOutputParser()
-
-# Combine prompt, model, and parser into a chain
-chain = prompt | llm | output_parser
-
-# Invoke the chain with a sample input
-result = chain.invoke({"flower": "玫瑰"})
-
-print(result)
+if __name__ == "__main__":
+    # Execute the main function if this script is run directly
+    main()
