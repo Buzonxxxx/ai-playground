@@ -1,88 +1,63 @@
-# README
+# OpenAI API Integration
 
-## Overview
-
-This script demonstrates how to use the OpenAI API to interact with the OpenAI API.
+This project demonstrates how to interact with the OpenAI API for text generation and image creation.
 
 ## Prerequisites
 
-- Python 3.6 or higher
-- `python-dotenv` and `openai` package
+- Python 3.6+
 - OpenAI API key
+- Required Python packages: `python-dotenv`, `openai`, `requests`
 
 ## Setup
 
-1. **Install required packages:**
+1. Install required packages:
    ```sh
-   pip install python-dotenv openai
+   pip install python-dotenv openai requests
    ```
-2. **Create a .env file in the root directory of your project and add your OpenAI API key:**
+
+2. Create a `.env` file in the project root and add your OpenAI API key:
    ```env
    OPENAI_API_KEY=your-openai-api-key
    ```
-3. **Run the file**
+
+3. Run the scripts:
    ```sh
    python3 text_generation.py
    python3 img_generation.py
    ```
 
-## Code
-### Text Generation
-text_generation.py
-```python
-from dotenv import load_dotenv
-import os
+## Project Structure
 
-# Load environment variables from .env file
-load_dotenv()
+### Text Generation (`text_generation.py`)
 
-# Retrieve the API key from the environment variable
-openai_api_key = os.getenv("OPENAI_API_KEY")
+This script demonstrates how to use OpenAI's API for text generation:
 
-from openai import OpenAI
+- Loads environment variables
+- Initializes the OpenAI client
+- Generates text using chat completions
+- Outputs the response in JSON format
 
-client = OpenAI()
+Key functions:
+- `load_environment()`: Loads environment variables
+- `initialize_openai_client()`: Initializes the OpenAI client
+- `generate_text()`: Generates text using OpenAI's chat completions
 
-print(openai_api_key)
+### Image Generation (`img_generation.py`)
 
-response = client.chat.completions.create(
-    model="gpt-4o",
-    response_format={"type": "json_object"},
-    messages=[
-        {"role": "system", "content": "你是一個幫助使用者了解鮮花訊息的智能助手，並能夠輸出JSON格式的內容"},
-        {"role": "user", "content": "生日送什麼花最好?"},
-        {"role": "assistant", "content": "玫瑰花是生日禮物的熱門選擇"},
-        {"role":"user", "content": "送貨需要多長時間?"}
-    ]
-)
+This script shows how to use OpenAI's DALL-E 3 for image generation:
 
-print(response.choices[0].message.content)
-```
+- Loads environment variables
+- Initializes the OpenAI client
+- Generates an image based on a prompt
+- Downloads and saves the generated image
 
-### Image Generation
-img_generation.py
-```python
-from dotenv import load_dotenv
-import os
-from openai import OpenAI
+Key functions:
+- `load_environment()`: Loads environment variables
+- `initialize_openai_client()`: Initializes the OpenAI client
+- `generate_image()`: Generates an image using DALL-E 3
+- `download_image()`: Downloads the generated image
+- `save_image()`: Saves the image to a file
 
-# Load environment variables from .env file
-load_dotenv()
+## Usage
 
-# Retrieve the API key from the environment variable
-openai_api_key = os.getenv("OPENAI_API_KEY")
-
-client = OpenAI()
-
-response = client.images.generate(
-    model="dall-e-3",
-    prompt="電商花語秘境的新春玫瑰花宣傳海報，配上文案",
-    size="1024x1024",
-    quality="standard",
-    n=1
-    
-)
-
-image_url = response.data[0].url
-print(image_url)
-```
+Both scripts can be run independently to demonstrate their respective functionalities. Modify the prompts or parameters in the `main()` function of each script to experiment with different inputs and outputs.

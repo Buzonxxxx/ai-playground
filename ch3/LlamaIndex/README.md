@@ -1,47 +1,43 @@
-# README
+# LlamaIndex OpenAI Integration
 
-## Overview
-
-This script demonstrates how to use the `llama_index` library to interact with OpenAI's API. It reads documents from a specified directory, creates an index from these documents using a specified model, and allows querying the index. The script also persists the index's storage context for future use.
+This project demonstrates the use of LlamaIndex with OpenAI's API to create and query a document index.
 
 ## Prerequisites
 
-- Python 3.6 or higher
-- `python-dotenv` package
-- `llama_index` package
+- Python 3.6+
 - OpenAI API key
 
 ## Setup
 
-1. **Install required packages:**
+1. Install dependencies:
    ```sh
    pip install python-dotenv llama_index
    ```
-2. **Create a .env file in the root directory of your project and add your OpenAI API key:**
+
+2. Create a `.env` file in the project root:
    ```env
    OPENAI_API_KEY=your-openai-api-key
    ```
-3. **Run the file**
+
+3. Run the script:
    ```sh
    python3 main.py
    ```
 
-## Explanation
+## Project Structure
 
-- **Environment Variables**:
-  - The script uses the `dotenv` package to load environment variables from a `.env` file. This is useful for keeping sensitive information like API keys secure.
+- `main.py`: Contains the main script with functions:
+  - `load_environment()`: Loads environment variables
+  - `create_index()`: Creates and persists a VectorStoreIndex from documents
+  - `query_index()`: Queries the index with a given question
+  - `main()`: Demonstrates index creation and querying
 
-- **Reading Documents**:
-  - Documents are read from the 'data' directory using `SimpleDirectoryReader`.
+## Components
 
-- **Creating an Index**:
-  - An index is created from the documents using the `VectorStoreIndex` class with the specified model and API key.
+- Environment variables: Managed with `python-dotenv`
+- Document reading: Uses `SimpleDirectoryReader` to load documents from the 'data' directory
+- Index creation: Utilizes `VectorStoreIndex` to create an index from documents
+- Querying: Employs a query engine to execute queries on the index
+- Persistence: Saves the index's storage context for future use
 
-- **Query Engine**:
-  - A query engine is created from the index to allow querying.
-
-- **Executing a Query**:
-  - The script queries the index with a sample question and prints the response.
-
-- **Persisting the Index**:
-  - The index's storage context is persisted for future use.
+The script creates an index from documents, persists it, and then demonstrates querying with a sample question.
