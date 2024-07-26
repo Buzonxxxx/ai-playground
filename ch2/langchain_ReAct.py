@@ -1,3 +1,4 @@
+# Import necessary libraries
 from dotenv import load_dotenv
 from langchain import hub
 from langchain_openai import OpenAI
@@ -5,43 +6,56 @@ from langchain_community.utilities import SerpAPIWrapper
 from langchain.agents.tools import Tool
 from langchain.agents import create_react_agent, AgentExecutor
 
-# 加載環境變量
-load_dotenv()  
+def load_environment():
+    # Load environment variables
+    load_dotenv()
 
-# 從hub中獲取React的Prompt
-prompt = hub.pull("hwchase17/react")
-print("獲取的Prompt: ", prompt)
+def get_react_prompt():
+    # Get ReAct prompt from Langchain Hub
+    prompt = hub.pull("hwchase17/react")
+    print("Retrieved Prompt: ", prompt)
+    return prompt
 
-# 初始化OpenAI LLM
-llm = OpenAI()
+def initialize_llm():
+    # Initialize OpenAI language model
+    return OpenAI()
 
-# 設置SerpAPI工具
-search = SerpAPIWrapper()
-tools = [
-    Tool(
-        name="Search",
-        func=search.run,
-        description="當大模型沒有相關知識時，用於搜索知識"
-    ),
-]
+def setup_tools():
+    # Set up search tool
+    search = SerpAPIWrapper()
+    return [
+        Tool(
+            name="Search",
+            func=search.run,
+            description="Used for searching knowledge when the large model lacks relevant information"
+        ),
+    ]
 
-# 創建React代理
-agent = create_react_agent(llm, tools, prompt)
+def create_agent(llm, tools, prompt):
+    # Create ReAct agent
+    agent = create_react_agent(llm, tools, prompt)
+    return AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-# 初始化代理執行器
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
-# 執行代理並打印結果
-def run_agent(input_text):
+def run_agent(agent_executor, input_text):
+    # Run agent and print results
     print("======")
-    print(f"輸入: {input_text}")
+    print(f"Input: {input_text}")
     result = agent_executor.invoke({"input": input_text})
-    print(f"結果: {result}")
+    print(f"Result: {result}")
     print("======")
     return result
 
-# 第一次運行
-run_agent("當前Agent最新研究進展是什麼?")
+def main():
+    # Main function: set up environment, create agent, and run
+    load_environment()
+    prompt = get_react_prompt()
+    llm = initialize_llm()
+    tools = setup_tools()
+    agent_executor = create_agent(llm, tools, prompt)
 
-# 第二次運行
-run_agent("當前Agent最新研究進展是什麼?")
+    # Run twice
+    for _ in range(2):
+        run_agent(agent_executor, "What are the latest research developments in the current Agent?")
+
+if __name__ == "__main__":
+    main()
